@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API = 'http://localhost:8080/api/v1/reviews';
+const API = 'http://localhost:8080/api/v1/users';
 
-class ReviewService {
+class UserService {
 
     getAll() {
         return axios.get(API);
@@ -21,4 +21,4 @@ class ReviewService {
     }
 }
 
-export default new ReviewService();
+export default new UserService();
