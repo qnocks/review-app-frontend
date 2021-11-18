@@ -50,9 +50,9 @@ class User extends React.Component {
                             this.state.users.map(user =>
                                 <tr key = {user.id}>
                                     <td>{user.id}</td>
-                                    <td>{user.name}</td>
+                                    <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.active.toString()}</td>
+                                    <td>{user.active}</td>
                                     <td>
                                         <button onClick={() => this.changeActive(user.id, user)} className="btn btn-dark">Change Status</button>
                                     </td>

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
 
 class Header extends React.Component {
     render() {
@@ -25,6 +24,7 @@ class Header extends React.Component {
                             <Button variant="outline-success">Search</Button>
                         </Form>
                         <Nav.Link href="/login">Login</Nav.Link>
+                        <Nav.Link href="/register">Register</Nav.Link>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
