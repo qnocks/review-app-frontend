@@ -1,5 +1,5 @@
 import axios from 'axios';
-import authHeader from "./authHeader";
+import authHeader from "./auth/authHeader";
 
 const API = 'http://localhost:8080/api/v1/reviews';
 
@@ -10,7 +10,6 @@ class ReviewService {
     }
 
     get(id) {
-        console.log("ReviewService.get(" + id + ")");
         return axios.get(API + '/' + id, { headers: authHeader() });
     }
 

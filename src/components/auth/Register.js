@@ -4,8 +4,8 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import isEmail from "validator/es/lib/isEmail";
 
-import AuthService from "../../services/AuthService";
 import {Container} from "react-bootstrap";
+import AuthService from "../../services/auth/AuthService";
 
 const required = value => {
     if (!value) {
@@ -17,7 +17,7 @@ const required = value => {
     }
 };
 
-const email = value => {
+const validEmail = value => {
     if (!isEmail(value)) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -27,7 +27,7 @@ const email = value => {
     }
 };
 
-const vusername = value => {
+const validUsername = value => {
     if (value.length < 3 || value.length > 20) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -37,7 +37,7 @@ const vusername = value => {
     }
 };
 
-const vpassword = value => {
+const validPassword = value => {
     if (value.length < 6 || value.length > 40) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -47,7 +47,7 @@ const vpassword = value => {
     }
 };
 
-export default class Register extends Component {
+class Register extends Component {
     constructor(props) {
         super(props);
         this.handleRegister = this.handleRegister.bind(this);
@@ -148,7 +148,7 @@ export default class Register extends Component {
                                             name="username"
                                             value={this.state.username}
                                             onChange={this.onChangeUsername}
-                                            validations={[required, vusername]}
+                                            validations={[required, validUsername]}
                                         />
                                     </div>
 
@@ -160,7 +160,7 @@ export default class Register extends Component {
                                             name="email"
                                             value={this.state.email}
                                             onChange={this.onChangeEmail}
-                                            validations={[required, email]}
+                                            validations={[required, validEmail]}
                                         />
                                     </div>
 
@@ -172,7 +172,7 @@ export default class Register extends Component {
                                             name="password"
                                             value={this.state.password}
                                             onChange={this.onChangePassword}
-                                            validations={[required, vpassword]}
+                                            validations={[required, validPassword]}
                                         />
                                     </div>
 
@@ -209,3 +209,5 @@ export default class Register extends Component {
         );
     }
 }
+
+export default Register;

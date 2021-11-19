@@ -1,8 +1,38 @@
 import React from 'react';
 import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
+import AuthService from "../services/auth/AuthService";
 
 class Header extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            authenticated: false
+        }
+    }
+
+    componentDidMount() {
+        const user = AuthService.getCurrentUser();
+
+        if (user) {
+            this.setState({
+                authenticated: true
+            })
+        }
+    }
+
+    logout() {
+        AuthService.logout();
+
+        this.setState({
+            authenticated: false
+        });
+    }
+
     render() {
+
+        const { authenticated } = this.state;
+
         return (
             <Navbar bg="light" variant="light">
                 <Container>
@@ -23,8 +53,14 @@ class Header extends React.Component {
                             />
                             <Button variant="outline-success">Search</Button>
                         </Form>
-                        <Nav.Link href="/login">Login</Nav.Link>
-                        <Nav.Link href="/register">Register</Nav.Link>
+                        { authenticated ? (
+                                <Nav.Link href="/login" onClick={this.logout}>Logout</Nav.Link>
+                        ) : (
+                            <div>
+                                <Nav.Link href="/login">Login</Nav.Link>
+                                <Nav.Link href="/register">Register</Nav.Link>
+                            </div>
+                        )}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

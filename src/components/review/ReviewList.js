@@ -1,7 +1,7 @@
 import React from "react";
-import ReviewService from "../../services/ReviewService";
 import {Card, Col, Container, Form, FormControl, NavLink, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import ReviewService from "../../services/ReviewService";
 import './css/ReviewList.css';
 
 class ReviewList extends React.Component {
@@ -13,13 +13,10 @@ class ReviewList extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ReviewList.componentDidMount()');
         ReviewService.getAll().then(res => {
             this.setState({
                 reviews: res.data
             })
-            console.log('reviews: ' + this.state.reviews);
-            console.log('reviews size: ' + this.state.reviews.length);
         }).catch(err => {
             console.log(err)
         })
@@ -32,9 +29,6 @@ class ReviewList extends React.Component {
     }
 
     render() {
-
-        console.log('ReviewList.render()')
-
         return (
             <Container>
                 <Form className="d-flex">
@@ -57,7 +51,7 @@ class ReviewList extends React.Component {
                                                 <Card.Title>{review.name}</Card.Title>
                                                 <Card.Subtitle>{review.content}</Card.Subtitle>
                                                 <Card.Text>
-                                                    <p>Review for {review.contentName}    Score: {review.score}   Rating {review.rating}</p>
+                                                    Review for {review.contentName}    Score: {review.score}   Rating {review.rating}
                                                 </Card.Text>
                                             </Card.Body>
                                         </Card>

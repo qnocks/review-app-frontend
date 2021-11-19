@@ -1,6 +1,6 @@
 import React from 'react';
-import UserService from "../../services/UserService";
 import {Container} from "react-bootstrap";
+import UserService from "../../services/UserService";
 
 class User extends React.Component {
     constructor(props) {
@@ -15,12 +15,13 @@ class User extends React.Component {
             this.setState({
                 users: res.data
             })
-            console.log('users: ' + this.state.users);
-            console.log('users size: ' + this.state.users.length);
-        })
+        });
+        console.log('User.componentDidMount users:');
+        console.log(this.state.users);
     }
 
     changeActive(id, user) {
+        console.log('User.changeActive user:')
         user.active = !user.active;
         UserService.update(id, user).then(res => {
             let idx = this.state.users.findIndex((e => e.id === id));
@@ -52,7 +53,7 @@ class User extends React.Component {
                                     <td>{user.id}</td>
                                     <td>{user.username}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.active}</td>
+                                    <td>{user.active.toString()}</td>
                                     <td>
                                         <button onClick={() => this.changeActive(user.id, user)} className="btn btn-dark">Change Status</button>
                                     </td>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import authHeader from "./authHeader";
+import authHeader from "./auth/authHeader";
 
 const API = 'http://localhost:8080/api/v1/users';
 

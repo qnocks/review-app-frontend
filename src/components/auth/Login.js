@@ -3,8 +3,8 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
-import AuthService from "../../services/AuthService";
 import {Container} from "react-bootstrap";
+import AuthService from "../../services/auth/AuthService";
 
 const required = value => {
     if (!value) {
@@ -16,7 +16,7 @@ const required = value => {
     }
 };
 
-export default class Login extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
@@ -154,3 +154,5 @@ export default class Login extends Component {
         );
     }
 }
+
+export default Login;
