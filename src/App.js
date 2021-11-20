@@ -12,6 +12,7 @@ import Register from "./components/auth/Register";
 import AuthVerify from "./services/auth/authVerify";
 import AuthService from "./services/auth/AuthService";
 import EventBus from "./services/auth/EventBus";
+import ProfileForm from "./components/profile/ProfileForm";
 
 // npm install react-bootstrap bootstrap@5.1.3
 
@@ -116,6 +117,7 @@ class App extends React.Component {
                     <Route path="/login" exact component={Login} />
                     <Route path="/register" exact component={Register} />
                     <Route path='/profile' exact component={Profile} />
+                    <Route path='/profile/:id/edit' exact component={ProfileForm} />
                     <Route path='/reviews' exact component={ReviewList} />
                     <Route path='/reviews/:id' exact component={Review} />
                     <Route path='/users' exact component={User} />

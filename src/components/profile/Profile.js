@@ -1,5 +1,5 @@
 import React from "react";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Card, Container} from "react-bootstrap";
 import AuthService from "../../services/auth/AuthService";
 
@@ -70,6 +70,7 @@ class Profile extends React.Component {
                                     currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
                                 </p>
                             </Card.Text>
+                            <Link to={`/profile/${currentUser.id}/edit`} variant="primary">Edit</Link>
                         </Card.Body>
                     </Card>: null
                 }

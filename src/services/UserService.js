@@ -9,16 +9,16 @@ class UserService {
         return axios.get(API, { headers: authHeader() });
     }
 
-    save(review) {
-        return axios.post(API, review, { headers: authHeader() });
+    save(user) {
+        return axios.post(API, user, { headers: authHeader() });
     }
 
     delete(id) {
         return axios.delete(API + '/' + id, { headers: authHeader() });
     }
 
-    update(id, review) {
-        return axios.put(API + '/' + id, review, { headers: authHeader() });
+    update(id, user) {
+        return axios.put(API + '/' + id, user, { headers: authHeader() });
     }
 }
 
