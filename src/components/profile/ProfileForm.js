@@ -23,20 +23,30 @@ class ProfileForm extends React.Component {
             password: this.state.password,
         }
 
-        console.log('profile')
-        console.log(profile)
-
         const id = this.props.match.params.id;
 
         UserService.update(id, profile).then(res => {
-            AuthService.login(this.state.username, this.state.password).then(() => {
-                    this.props.history.push("/profile");
-                    window.location.reload();
+            AuthService.getCurrentUser().then(
+                res => {
+                    this.setState({
+                        currentUser: res,
+                        userReady: true
+                    })
+                    // this.props.history.push("/profile");
+                    // window.location.reload();
+                },
+                err => {
+                    console.log(err);
+                    this.setState({ redirect: "/home" });
                 }
             );
-        });
 
-        // AuthService.updateUser(updatedUser);
+            // AuthService.login(this.state.username, this.state.password).then(() => {
+            //         this.props.history.push("/profile");
+            //         window.location.reload();
+            //     }
+            // );
+        });
     }
 
     handleUsername(event) {
@@ -69,7 +79,7 @@ class ProfileForm extends React.Component {
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="text" onChange={this.handlePassword.bind(this)} placeholder="Enter new password" />
+                        <Form.Control type="password" onChange={this.handlePassword.bind(this)} placeholder="Enter new password" />
                     </Form.Group>
                     <Button onClick={this.updateProfile.bind(this)} variant="primary" type="submit">Save</Button>
                 </Form>

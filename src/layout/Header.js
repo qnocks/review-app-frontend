@@ -12,13 +12,27 @@ class Header extends React.Component {
     }
 
     componentDidMount() {
-        const user = AuthService.getCurrentUser();
+        AuthService.getCurrentUser().then(
+            res => {
+                this.setState({
+                    authenticated: true
+                })
+            }
+        );
 
-        if (user) {
-            this.setState({
-                authenticated: true
-            })
-        }
+        // if (user) {
+        //     this.setState({
+        //         authenticated: true
+        //     })
+        // }
+
+        // const user = AuthService.getCurrentUser();
+        //
+        // if (user) {
+        //     this.setState({
+        //         authenticated: true
+        //     })
+        // }
     }
 
     logout() {

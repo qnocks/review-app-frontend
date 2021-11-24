@@ -1,12 +1,18 @@
 import React from "react";
-import {Button, Card, Container} from "react-bootstrap";
+import {Card, Container} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
+import {Remarkable} from "remarkable";
+import Markdown from 'react-remarkable';
+import {Link} from "react-router-dom";
+
+const md = new Remarkable()
 
 class Review extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            text: '',
             review: {name: '', text: ''}
         }
     }
@@ -14,7 +20,8 @@ class Review extends React.Component {
     componentDidMount() {
         ReviewService.get(this.props.match.params.id).then(res => {
             this.setState({
-                review: res.data
+                review: res.data,
+                text: res.data.text
             })
         }).catch(err => {
             console.log(err);
@@ -22,16 +29,19 @@ class Review extends React.Component {
     }
 
     render() {
+        const { text } = this.state;
+
         return (
             <Container>
-                <Card className="text-center">
+                <Card>
                     <Card.Header>{this.state.review.content} ({this.state.review.contentName})</Card.Header>
                     <Card.Body>
                         <Card.Title>{this.state.review.name}</Card.Title>
-                        <Card.Text>
-                            {this.state.review.text}
+                        <Card.Text className="text-start">
+                            <Markdown>{text}</Markdown>
                         </Card.Text>
-                        <Button variant="primary">Go somewhere</Button>
+                        <Link to={`/reviews/${this.state.review.id}/edit`} variant="primary">Edit</Link>
+                        {/*<Button variant="primary">Edit</Button>*/}
                     </Card.Body>
                     <Card.Footer className="text-muted">2 days ago</Card.Footer>
                 </Card>

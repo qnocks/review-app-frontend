@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from "./authHeader";
 
 const API = 'http://localhost:8080/api/auth';
 
@@ -31,7 +32,22 @@ class AuthService {
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        console.log('getCurrentUser().user:')
+        console.log(user)
+
+        // return user;
+
+        return axios.get(API + '/user', {headers: authHeader()}).then(res => {
+            if (res.data.accessToken) {
+                localStorage.setItem('user', JSON.stringify(res.data));
+            }
+
+            return res.data;
+        });
+
+        // return JSON.parse(localStorage.getItem('user'));
     }
 
     updateUser(user) {
