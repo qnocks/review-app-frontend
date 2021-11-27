@@ -15,7 +15,6 @@ class Profile extends React.Component {
     }
 
     componentDidMount() {
-        console.log('Profile.componentDidMount() before getCurrentUser')
         AuthService.getCurrentUser().then(
             res => {
                 this.setState({
@@ -30,17 +29,6 @@ class Profile extends React.Component {
                 this.setState({ redirect: "/home" });
             }
         );
-
-        // const currentUser = AuthService.getCurrentUser();
-        //
-        // if (!currentUser) {
-        //     this.setState({ redirect: "/home" });
-        // }
-        //
-        // this.setState({
-        //     currentUser: currentUser,
-        //     userReady: true
-        // })
     }
 
     render() {

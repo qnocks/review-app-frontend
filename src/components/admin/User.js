@@ -1,6 +1,7 @@
 import React from 'react';
 import {Container} from "react-bootstrap";
 import UserService from "../../services/UserService";
+import {Link} from "react-router-dom";
 
 class User extends React.Component {
     constructor(props) {
@@ -51,7 +52,7 @@ class User extends React.Component {
                             this.state.users.map(user =>
                                 <tr key = {user.id}>
                                     <td>{user.id}</td>
-                                    <td>{user.username}</td>
+                                    <Link to={`/profile/${user.id}`}><td>{user.username}</td></Link>
                                     <td>{user.email}</td>
                                     <td>{user.active.toString()}</td>
                                     <td>

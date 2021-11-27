@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Container, FloatingLabel, Form} from "react-bootstrap";
+import {Button, Card, Container, FloatingLabel, Form} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 
@@ -20,13 +20,7 @@ class ReviewForm extends React.Component {
 
     componentDidMount() {
 
-        this.setState({reviewId: this.props.match.params.reviewId});
-
-        // id = this.props.match.params.id;
-
-        console.log('reviewId');
-        console.log(this.props.match.params.reviewId);
-        console.log(this.state.reviewId);
+        // this.setState({reviewId: this.props.match.params.reviewId});
 
         const id = this.props.match.params.reviewId;
 
@@ -39,12 +33,6 @@ class ReviewForm extends React.Component {
                     contentName: res.data.contentName,
                     text: res.data.text
                 });
-
-                // console.log('ReviewForm.didMount success callback');
-                // console.log(this.state.name);
-                // console.log(this.state.content);
-                // console.log(this.state.contentName);
-                // console.log(this.state.text);
             });
         }
     }
@@ -97,28 +85,33 @@ class ReviewForm extends React.Component {
 
     handleContent(event) {
         this.setState({ content: event.target.value });
-        // console.log(this.state.content);
     }
 
     handleContentName(event) {
         this.setState({ contentName: event.target.value });
-        // console.log(this.state.contentName);
     }
 
     handleText(event) {
         this.setState({text: event.target.value });
-        // console.log(this.state.text);
     }
 
     render() {
+
+        console.log('contentName');
+        console.log(this.state.contentName);
+
         return (
             <Container className="">
                 <Form className="p-5">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Control type="name" onChange={this.handleName.bind(this)} placeholder="Review name" />
+                        <Form.Control
+                            type="name"
+                            onChange={this.handleName.bind(this)}
+                            defaultValue={this.state.name}
+                            placeholder="Review name" />
                     </Form.Group>
 
-                    <Form.Select className="" onChange={this.handleContent.bind(this)}>
+                    <Form.Select defaultValue={this.state.content} onChange={this.handleContent.bind(this)}>
                         <option>Content type</option>
                         <option value="BOOK">Book</option>
                         <option value="MOVIE">Movie</option>
@@ -126,7 +119,12 @@ class ReviewForm extends React.Component {
                     </Form.Select>
 
                     <Form.Group className="mt-3 mb-3" controlId="formBasicEmail">
-                        <Form.Control type="contentName" onChange={this.handleContentName.bind(this)} placeholder="Content name" />
+                        <Form.Control
+                            type="contentName"
+                            onChange={this.handleContentName.bind(this)}
+                            defaultValue={this.state.contentName}
+                            placeholder="Content name"
+                        />
                     </Form.Group>
 
                     <FloatingLabel controlId="text" label="text">
@@ -134,13 +132,27 @@ class ReviewForm extends React.Component {
                             as="textarea"
                             placeholder="Leave a comment here"
                             style={{ height: '100px' }}
+                            defaultValue={this.state.text}
                             onChange={this.handleText.bind(this)}
                         />
                     </FloatingLabel>
 
                     <Button onClick={this.save.bind(this)} variant="primary" type="submit" className="mt-3">Save</Button>
                 </Form>
-                <div dangerouslySetInnerHTML={{__html: md.render(this.state.text)}} />
+
+                <Card.Title>Preview</Card.Title>
+                <Card>
+                    <Card.Header>{this.state.content} ({this.state.contentName})</Card.Header>
+                    <Card.Body>
+                        <Card.Title>{this.state.name}</Card.Title>
+                        <Card.Text className="text-start">
+                            <div dangerouslySetInnerHTML={{__html: md.render(this.state.text)}} />
+                        </Card.Text>
+                    </Card.Body>
+                    <Card.Footer className="text-muted">2 days ago</Card.Footer>
+                </Card>
+
+
             </Container>
         );
     }

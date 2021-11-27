@@ -113,11 +113,14 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <div className="App">
-                    <Header />
+                    {/*<Header />*/}
+                    {/*Getting access for history object -> this.props.history */}
+                    <Route path='/' component={Header} />
                     <Route path='/' exact component={Home} />
                     <Route path="/login" exact component={Login} />
                     <Route path="/register" exact component={Register} />
                     <Route path='/profile' exact component={Profile} />
+                    <Route path='/profile/:id' exact component={Profile} />
                     <Route path='/profile/:id/edit' exact component={ProfileForm} />
                     <Route path='/profile/:profile_id/reviews' exact component={ReviewForm} />
                     <Route path='/reviews' exact component={ReviewList} />

@@ -1,13 +1,17 @@
 import React from 'react';
 import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap";
 import AuthService from "../services/auth/AuthService";
+import SearchService from "../services/SearchService";
+import {Redirect} from "react-router-dom";
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            authenticated: false
+            authenticated: false,
+            redirect: false,
+            searchedReviews: []
         }
     }
 
@@ -35,6 +39,49 @@ class Header extends React.Component {
         // }
     }
 
+    handleSearch(event) {
+        event.preventDefault();
+        this.setState({search: event.target.value});
+        console.log(this.state.search);
+    }
+
+    search(event) {
+        event.preventDefault();
+
+        const text = this.state.search;
+        console.log('Header.search: text');
+        console.log(text);
+        
+        // this.props.history.push("/");
+
+        SearchService.getSearchReview(text).then(
+            res => {
+                this.setState({
+                    // redirect: true,
+                    // searchedReviews: res.data
+                });
+
+                // this.props.history.push("/");
+
+                console.log('Header.search successful callback');
+                console.log(this.state.reviews);
+
+                this.props.history.push({
+                    pathname: '/',
+                    state: {reviews: res.data}
+                });
+
+                window.location.reload();
+
+
+
+            },
+            err => {
+                console.log(err);
+            }
+        );
+    }
+
     logout() {
         AuthService.logout();
 
@@ -45,8 +92,18 @@ class Header extends React.Component {
 
     render() {
 
-        const { authenticated } = this.state;
+        if (this.state.redirect) {
+            console.log('REDIRECTING TO /home with ');
+            console.log(this.state.searchedReviews);
+            return <Redirect to={{
+                    pathname: '/home',
+                    state: { reviews: this.state.searchedReviews }
+                }}
+            />
+        }
 
+        const { authenticated } = this.state;
+        
         return (
             <Navbar bg="light" variant="light">
                 <Container>
@@ -59,13 +116,14 @@ class Header extends React.Component {
                     <Navbar.Toggle />
                     <Navbar.Collapse className="justify-content-end">
                         <Form className="d-flex">
-                            <FormControl
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                            />
-                            <Button variant="outline-success">Search</Button>
+                                <FormControl
+                                    type="search"
+                                    placeholder="Search"
+                                    className="me-2"
+                                    aria-label="Search"
+                                    onChange={this.handleSearch.bind(this)}
+                                />
+                            <Button onClick={this.search.bind(this)} variant="outline-success">Search</Button>
                         </Form>
                         { authenticated ? (
                                 <Nav.Link href="/login" onClick={this.logout}>Logout</Nav.Link>
