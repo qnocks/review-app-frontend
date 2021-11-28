@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Card, Container, FloatingLabel, Form} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
+import AuthService from "../../services/auth/AuthService";
 
 const md = new Remarkable()
 
@@ -10,11 +11,12 @@ class ReviewForm extends React.Component {
         super(props);
 
         this.state = {
-            reviewId: -1,
+            reviewId: null,
             name: '',
             content: '',
             contentName: '',
-            text: ''
+            text: '',
+            userId: null
         }
     }
 
@@ -24,9 +26,17 @@ class ReviewForm extends React.Component {
 
         const id = this.props.match.params.reviewId;
 
+        AuthService.getCurrentUser().then(
+            res => {
+                this.setState({userId: res.id});
+            },
+            err => {
+                console.log(err);
+            }
+        );
+
         if (id !== null) {
             ReviewService.get(id).then(res => {
-
                 this.setState({
                     name: res.data.name,
                     content: res.data.content,
@@ -44,7 +54,8 @@ class ReviewForm extends React.Component {
             name: this.state.name,
             content: this.state.content,
             contentName: this.state.contentName,
-            text: this.state.text
+            text: this.state.text,
+            userId: this.state.userId
         };
 
         console.log('ReviewForm.save.review:');

@@ -44,7 +44,7 @@ class User extends React.Component {
                             <td>Name</td>
                             <td>Email</td>
                             <td>Active</td>
-                            <td></td>
+                            <td/>
                         </tr>
                         </thead>
                         <tbody>
@@ -56,7 +56,9 @@ class User extends React.Component {
                                     <td>{user.email}</td>
                                     <td>{user.active.toString()}</td>
                                     <td>
-                                        <button onClick={() => this.changeActive(user.id, user)} className="btn btn-dark">Change Status</button>
+                                        <button onClick={() => this.changeActive(user.id, user)} className="btn btn-dark">
+                                            Change Status
+                                        </button>
                                     </td>
                                 </tr>
                             )
@@ -67,7 +69,6 @@ class User extends React.Component {
             </Container>
         )
     }
-
 }
 
 export default User;

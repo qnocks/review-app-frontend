@@ -14,8 +14,8 @@ class ProfileForm extends React.Component {
         }
     }
 
-    updateProfile(event) {
-        event.preventDefault();
+    updateProfile(e) {
+        e.preventDefault();
 
         const profile = {
             username: this.state.username,
@@ -23,27 +23,48 @@ class ProfileForm extends React.Component {
             password: this.state.password,
         }
 
+        console.log('profile');
+        console.log(profile);
+
         const id = this.props.match.params.id;
 
         UserService.update(id, profile).then(res => {
-            AuthService.getCurrentUser().then(
-                res => {
-                    this.setState({
-                        currentUser: res,
-                        userReady: true
-                    })
-                    // this.props.history.push("/profile");
-                    // window.location.reload();
+            AuthService.login(profile.username, profile.password).then(
+                () => {
+                    this.props.history.push("/profile");
+                    window.location.reload();
                 },
-                err => {
-                    console.log(err);
-                    this.setState({ redirect: "/home" });
+                error => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+
+                    this.setState({
+                        loading: false,
+                        message: resMessage
+                    });
                 }
             );
 
-            // AuthService.login(this.state.username, this.state.password).then(() => {
-            //         this.props.history.push("/profile");
-            //         window.location.reload();
+            // AuthService.updateUser(user);
+            //
+            // AuthService.getCurrentUser().then(
+            //     res => {
+            //         console.log('Inside AuthService.getCurrentUser() res:');
+            //         console.log(res);
+            //         this.setState({
+            //             currentUser: res,
+            //             userReady: true
+            //         });
+            //         // this.props.history.push("/profile");
+            //         // window.location.reload();
+            //     },
+            //     err => {
+            //         console.log(err);
+            //         this.setState({ redirect: "/home" });
             //     }
             // );
         });

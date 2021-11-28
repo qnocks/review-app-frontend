@@ -9,6 +9,10 @@ class UserService {
         return axios.get(API, { headers: authHeader() });
     }
 
+    get(id) {
+        return axios.get(API + '/' + id, { headers: authHeader() });
+    }
+
     save(user) {
         return axios.post(API, user, { headers: authHeader() });
     }
