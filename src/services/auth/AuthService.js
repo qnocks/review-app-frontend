@@ -32,12 +32,9 @@ class AuthService {
     }
 
     getCurrentUser() {
-        const user = JSON.parse(localStorage.getItem('user'));
-
-        console.log('getCurrentUser().user:')
-        console.log(user)
-
-        // return user;
+        // const user = JSON.parse(localStorage.getItem('user'));
+        // console.log('getCurrentUser().user:')
+        // console.log(user)
 
         return axios.get(API + '/user', {headers: authHeader()}).then(res => {
             if (res.data.accessToken) {
@@ -46,8 +43,6 @@ class AuthService {
 
             return res.data;
         });
-
-        // return JSON.parse(localStorage.getItem('user'));
     }
 
     updateUser(user) {

@@ -23,7 +23,7 @@ class ProfileForm extends React.Component {
             password: this.state.password,
         }
 
-        console.log('profile');
+        console.log('updated profile');
         console.log(profile);
 
         const id = this.props.match.params.id;

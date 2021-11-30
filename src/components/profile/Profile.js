@@ -50,7 +50,6 @@ class Profile extends React.Component {
             console.log('OWN PROFILE');
             AuthService.getCurrentUser().then(
                 res => {
-
                     console.log('RES:')
                     console.log(res)
 
