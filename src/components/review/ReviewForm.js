@@ -130,7 +130,7 @@ class ReviewForm extends React.Component {
                     value={this.state.tags}
                     onChange={this.handleTags.bind(this)}
                     placeHolder="Enter tags"
-                    seprators={" "}
+                    // seprators={" "}
                 />
 
                 <Form className="p-5">

@@ -15,8 +15,6 @@ import EventBus from "./services/auth/EventBus";
 import ProfileForm from "./components/profile/ProfileForm";
 import ReviewForm from "./components/review/ReviewForm";
 
-// npm install react-bootstrap bootstrap@5.1.3
-
 // class App extends React.Component {
 //     constructor(props) {
 //         super(props);
