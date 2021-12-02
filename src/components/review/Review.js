@@ -13,7 +13,6 @@ class Review extends React.Component {
         super(props);
 
         this.state = {
-            text: '',
             review: {name: '', text: '', userId: null},
             currentUserId: null,
             isOwn: false
@@ -21,61 +20,45 @@ class Review extends React.Component {
     }
 
     componentDidMount() {
-        ReviewService.get(this.props.match.params.id).then(res => {
-            this.setState({
-                review: res.data,
-                text: res.data.text
-            })
-        }).catch(err => {
-            console.log(err);
-        });
-
-        AuthService.getCurrentUser().then(
-            res => {
-                console.log('RES.DATA');
-                console.log(res);
+        ReviewService.get(this.props.match.params.id).then(
+            reviewRes => {
+                console.log('ReviewService.get success');
                 this.setState({
-                    currentUserId: res.id
+                    review: reviewRes.data,
                 });
-                // if (res.id === this.state.review.userId) {
-                //     this.setState({isOwn: true});
-                // } else {
-                //     this.setState({isOwn: false});
-                // }
+                AuthService.getCurrentUser().then(
+                    userRes => {
+                        if (userRes.id === reviewRes.data.userId) {
+                            this.setState({isOwn: true});
+                            console.log('SETTING TRUE')
+                        } else {
+                            this.setState({isOwn: false});
+                            console.log('SETTING FALSE')
+                        }
+                    },
+                    err => {
+                        console.log(err);
+                    }
+                )
             },
             err => {
                 console.log(err);
             }
         );
-
-        if (this.state.currentUserId === this.state.review.userId) {
-            this.setState({isOwn: true});
-            console.log('SETTING TRUE')
-        } else {
-            this.setState({isOwn: false});
-            console.log('SETTING FALSE')
-        }
     }
 
     render() {
-        const { text } = this.state;
-
         const { isOwn } = this.state;
 
         const { review } = this.state;
 
-        console.log('review:::');
-        console.log(review);
+        const text = review.text;
 
         let tagsStr = '';
-
         if (review.tags) {
-            review.tags.forEach(t => {
-                tagsStr += t.name + ' ';
+            review.tags.forEach(tag => {
+                tagsStr += tag.name + ' ';
             });
-
-            console.log('tagsStr::')
-            console.log(tagsStr);
         }
 
         return (
@@ -88,7 +71,6 @@ class Review extends React.Component {
                             <Markdown>{text}</Markdown>
                         </Card.Text>
                         {isOwn ? (<Link to={`/reviews/${this.state.review.id}/edit`} variant="primary">Edit</Link>) : null}
-                        {/*<Button variant="primary">Edit</Button>*/}
                     </Card.Body>
                     <Card.Footer className="text-muted">{tagsStr}</Card.Footer>
                 </Card>

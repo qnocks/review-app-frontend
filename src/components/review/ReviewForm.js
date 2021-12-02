@@ -3,6 +3,7 @@ import {Button, Card, Container, FloatingLabel, Form} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 import AuthService from "../../services/auth/AuthService";
+import {TagsInput} from "react-tag-input-component";
 
 const md = new Remarkable()
 
@@ -16,14 +17,12 @@ class ReviewForm extends React.Component {
             content: '',
             contentName: '',
             text: '',
-            userId: null
+            userId: null,
+            tags: [],
         }
     }
 
     componentDidMount() {
-
-        // this.setState({reviewId: this.props.match.params.reviewId});
-
         const id = this.props.match.params.reviewId;
 
         AuthService.getCurrentUser().then(
@@ -55,7 +54,8 @@ class ReviewForm extends React.Component {
             content: this.state.content,
             contentName: this.state.contentName,
             text: this.state.text,
-            userId: this.state.userId
+            userId: this.state.userId,
+            tags: this.state.tags
         };
 
         console.log('ReviewForm.save.review:');
@@ -106,20 +106,41 @@ class ReviewForm extends React.Component {
         this.setState({text: event.target.value });
     }
 
+    handleTags(input) {
+        console.log('tag')
+        console.log(input)
+        // const existingTags = this.state.tags;
+        // existingTags.push(tag);
+        this.setState({
+            tags: input
+            // tags: [...this.state.tags, tag]
+            // tags: this.state.tags.concat(tag)
+        })
+        console.log('addTag tags:')
+        console.log(this.state.tags);
+    }
+
     render() {
-
-        console.log('contentName');
-        console.log(this.state.contentName);
-
         return (
             <Container className="">
+
+                <TagsInput
+                    className="mt-10"
+                    name="tag"
+                    value={this.state.tags}
+                    onChange={this.handleTags.bind(this)}
+                    placeHolder="Enter tags"
+                    seprators={" "}
+                />
+
                 <Form className="p-5">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Control
                             type="name"
                             onChange={this.handleName.bind(this)}
                             defaultValue={this.state.name}
-                            placeholder="Review name" />
+                            placeholder="Review name"
+                        />
                     </Form.Group>
 
                     <Form.Select defaultValue={this.state.content} onChange={this.handleContent.bind(this)}>
@@ -128,6 +149,10 @@ class ReviewForm extends React.Component {
                         <option value="MOVIE">Movie</option>
                         <option value="GAME">Game</option>
                     </Form.Select>
+
+                    {/*<pre>{JSON.stringify(this.state.tags)}</pre>*/}
+
+
 
                     <Form.Group className="mt-3 mb-3" controlId="formBasicEmail">
                         <Form.Control
