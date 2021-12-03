@@ -7,6 +7,15 @@ import {TagsInput} from "react-tag-input-component";
 
 const md = new Remarkable()
 
+const KeyCodes = {
+    comma: 188,
+    enter: [10, 13],
+};
+
+let tagId = 0;
+
+const delimiters = [...KeyCodes.enter, KeyCodes.comma];
+
 class ReviewForm extends React.Component {
     constructor(props) {
         super(props);
@@ -40,7 +49,8 @@ class ReviewForm extends React.Component {
                     name: res.data.name,
                     content: res.data.content,
                     contentName: res.data.contentName,
-                    text: res.data.text
+                    text: res.data.text,
+                    tags: res.data.tags
                 });
             });
         }
@@ -109,29 +119,87 @@ class ReviewForm extends React.Component {
     handleTags(input) {
         console.log('tag')
         console.log(input)
-        // const existingTags = this.state.tags;
-        // existingTags.push(tag);
-        this.setState({
-            tags: input
-            // tags: [...this.state.tags, tag]
-            // tags: this.state.tags.concat(tag)
-        })
-        console.log('addTag tags:')
+
+        for (let i = 0; i < input.length; i++) {
+            const tag = {
+                name: input[i]
+            };
+            console.log('tag in loop')
+            console.log(tag)
+
+            this.setState({tags: [...this.state.tags, tag]});
+        }
+
+        console.log('state.tags')
         console.log(this.state.tags);
     }
 
+    handleDelete(i) {
+        const { tags } = this.state;
+        this.setState({
+            tags: tags.filter((tag, index) => index !== i),
+        });
+    }
+
+    handleAddition(tag) {
+        console.log('tag')
+        console.log(tag)
+
+        const inputTag = JSON.stringify(tag);
+
+        const realTag = {
+            id: '' + tagId++,
+            name: inputTag.text
+        }
+
+        console.log('realTag')
+        console.log(realTag)
+
+        this.setState(state => ({ tags: [...state.tags, realTag] }));
+    }
+
+    handleDrag(tag, currPos, newPos) {
+        const tags = [...this.state.tags];
+        const newTags = tags.slice();
+
+        newTags.splice(currPos, 1);
+        newTags.splice(newPos, 0, tag);
+
+        // re-render
+        this.setState({ tags: newTags });
+    }
+
     render() {
+
+        const { tags, suggestions } = this.state;
+
+        console.log(this.state.tags)
+
+        let tagsStr = '';
+        // tags !== null ? tags.forEach(tag => {tagsStr += tag.name + ' ';}) : '';
+        if (tags) {
+            tags.forEach(tag => {tagsStr += tag.name + ' ';});
+        }
+
         return (
             <Container className="">
 
                 <TagsInput
                     className="mt-10"
                     name="tag"
-                    value={this.state.tags}
+                    value={tags}
                     onChange={this.handleTags.bind(this)}
                     placeHolder="Enter tags"
-                    // seprators={" "}
+
                 />
+
+                {/*<ReactTags tags={tags}*/}
+                {/*   // suggestions={suggestions}*/}
+                {/*   handleDelete={this.handleDelete.bind(this)}*/}
+                {/*   handleAddition={this.handleAddition.bind(this)}*/}
+                {/*   handleDrag={this.handleDrag.bind(this)}*/}
+                {/*   delimiters={delimiters}*/}
+                {/*/>*/}
 
                 <Form className="p-5">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -151,8 +219,6 @@ class ReviewForm extends React.Component {
                     </Form.Select>
 
                     {/*<pre>{JSON.stringify(this.state.tags)}</pre>*/}
-
-
 
                     <Form.Group className="mt-3 mb-3" controlId="formBasicEmail">
                         <Form.Control
@@ -185,7 +251,7 @@ class ReviewForm extends React.Component {
                             <div dangerouslySetInnerHTML={{__html: md.render(this.state.text)}} />
                         </Card.Text>
                     </Card.Body>
-                    <Card.Footer className="text-muted">2 days ago</Card.Footer>
+                    <Card.Footer className="text-muted">{tagsStr}</Card.Footer>
                 </Card>
 
 

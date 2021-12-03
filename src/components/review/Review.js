@@ -23,6 +23,7 @@ class Review extends React.Component {
         ReviewService.get(this.props.match.params.id).then(
             reviewRes => {
                 console.log('ReviewService.get success');
+                console.log(reviewRes);
                 this.setState({
                     review: reviewRes.data,
                 });
