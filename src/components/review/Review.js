@@ -5,6 +5,7 @@ import {Remarkable} from "remarkable";
 import Markdown from 'react-remarkable';
 import {Link} from "react-router-dom";
 import AuthService from "../../services/auth/AuthService";
+import ImageService from "../../services/ImageService";
 
 const md = new Remarkable()
 
@@ -27,6 +28,7 @@ class Review extends React.Component {
                 this.setState({
                     review: reviewRes.data,
                 });
+
                 AuthService.getCurrentUser().then(
                     userRes => {
                         if (userRes.id === reviewRes.data.userId) {
@@ -49,17 +51,13 @@ class Review extends React.Component {
     }
 
     render() {
-        const { isOwn } = this.state;
-
-        const { review } = this.state;
+        const { review, isOwn } = this.state;
 
         const text = review.text;
 
         let tagsStr = '';
         if (review.tags) {
-            review.tags.forEach(tag => {
-                tagsStr += tag.name + ' ';
-            });
+            review.tags.forEach(tag => {tagsStr += tag.name + ' ';});
         }
 
         return (
@@ -67,6 +65,7 @@ class Review extends React.Component {
                 <Card>
                     <Card.Header>{this.state.review.content} ({this.state.review.contentName})</Card.Header>
                     <Card.Body>
+                        <Card.Img variant="top" src={`${review.imagesLink}`} />
                         <Card.Title>{this.state.review.name}</Card.Title>
                         <Card.Text className="text-start">
                             <Markdown>{text}</Markdown>

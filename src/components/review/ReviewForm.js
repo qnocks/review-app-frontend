@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useCallback} from "react";
 import {Button, Card, Container, FloatingLabel, Form} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 import AuthService from "../../services/auth/AuthService";
-import { WithContext as ReactTags } from 'react-tag-input';
+import {WithContext as ReactTags} from 'react-tag-input';
+// import Dropzone from "../../layout/Dropzone";
+import ImageService from "../../services/ImageService";
+import {useDropzone} from "react-dropzone";
 
 const md = new Remarkable()
 
@@ -13,6 +16,29 @@ const KeyCodes = {
 };
 
 const delimiters = [...KeyCodes.enter, KeyCodes.comma];
+
+const formData = new FormData();
+
+function Dropzone() {
+    const onDrop = useCallback(acceptedFiles => {
+        const file = acceptedFiles[0];
+        formData.append('image', file);
+        console.log(file);
+    }, [])
+
+    const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+
+    return (
+        <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            {
+                isDragActive ?
+                    <p>Drop the files here ...</p> :
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+            }
+        </div>
+    )
+}
 
 class ReviewForm extends React.Component {
     constructor(props) {
@@ -48,7 +74,8 @@ class ReviewForm extends React.Component {
                     content: res.data.content,
                     contentName: res.data.contentName,
                     text: res.data.text,
-                    tags: res.data.tags
+                    tags: res.data.tags,
+                    file: null
                 });
             });
         }
@@ -57,44 +84,84 @@ class ReviewForm extends React.Component {
     save(event) {
         event.preventDefault();
 
+        const id = this.props.match.params.reviewId;
+
         const review = {
             name: this.state.name,
             content: this.state.content,
             contentName: this.state.contentName,
             text: this.state.text,
             userId: this.state.userId,
-            tags: this.state.tags
+            tags: this.state.tags,
+            imagesLink: ''
         };
 
-        console.log('ReviewForm.save.review:');
-        console.log(review);
+        ImageService.upload(id, formData).then(
+            res => {
+                console.log('File uploaded successfully');
+                console.log(res);
+                review.imagesLink = res.data;
 
-        const id = this.props.match.params.reviewId;
+                console.log('ReviewForm.save.review:');
+                console.log(review);
 
-        if (id !== undefined) {
-            console.log('UPDATE');
-            ReviewService.update(id, review).then(
-                (res) => {
-                    console.log('update success callback data')
-                    console.log(res.data)
-                    this.props.history.push("/profile");
-                },
-                err => {
-                    console.log(err);
+                if (id !== undefined) {
+                    console.log('UPDATE');
+                    ReviewService.update(id, review).then(
+                        (res) => {
+                            console.log('update success callback data')
+                            console.log(res.data)
+                            this.props.history.push("/profile");
+                        },
+                        err => {
+                            console.log(err);
+                        }
+                    );
                 }
-            );
-        }
-        else {
-            console.log('CREATE');
-            ReviewService.save(review).then(
-                () => {
-                    this.props.history.push("/profile");
-                },
-                err => {
-                    console.log(err);
+                else {
+                    console.log('CREATE');
+                    ReviewService.save(review).then(
+                        () => {
+                            this.props.history.push("/profile");
+                        },
+                        err => {
+                            console.log(err);
+                        }
+                    );
                 }
-            );
-        }
+            },
+            err => {
+                console.log(err);
+            }
+        )
+
+        // console.log('ReviewForm.save.review:');
+        // console.log(review);
+
+        // if (id !== undefined) {
+        //     console.log('UPDATE');
+        //     ReviewService.update(id, review).then(
+        //         (res) => {
+        //             console.log('update success callback data')
+        //             console.log(res.data)
+        //             this.props.history.push("/profile");
+        //         },
+        //         err => {
+        //             console.log(err);
+        //         }
+        //     );
+        // }
+        // else {
+        //     console.log('CREATE');
+        //     ReviewService.save(review).then(
+        //         () => {
+        //             this.props.history.push("/profile");
+        //         },
+        //         err => {
+        //             console.log(err);
+        //         }
+        //     );
+        // }
     }
 
     handleName(event) {
@@ -276,6 +343,8 @@ class ReviewForm extends React.Component {
                     />
                 </div>
 
+                <Dropzone />
+
                 <Form className="p-5">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Control
@@ -292,8 +361,6 @@ class ReviewForm extends React.Component {
                         <option value="MOVIE">Movie</option>
                         <option value="GAME">Game</option>
                     </Form.Select>
-
-                    {/*<pre>{JSON.stringify(this.state.tags)}</pre>*/}
 
                     <Form.Group className="mt-3 mb-3" controlId="formBasicEmail">
                         <Form.Control
