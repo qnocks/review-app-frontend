@@ -3,7 +3,7 @@ import {Button, Card, Container, FloatingLabel, Form} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 import AuthService from "../../services/auth/AuthService";
-import {TagsInput} from "react-tag-input-component";
+import { WithContext as ReactTags } from 'react-tag-input';
 
 const md = new Remarkable()
 
@@ -11,8 +11,6 @@ const KeyCodes = {
     comma: 188,
     enter: [10, 13],
 };
-
-let tagId = 0;
 
 const delimiters = [...KeyCodes.enter, KeyCodes.comma];
 
@@ -73,13 +71,12 @@ class ReviewForm extends React.Component {
 
         const id = this.props.match.params.reviewId;
 
-        console.log('reviewId');
-        console.log(id);
-
         if (id !== undefined) {
             console.log('UPDATE');
             ReviewService.update(id, review).then(
-                () => {
+                (res) => {
+                    console.log('update success callback data')
+                    console.log(res.data)
                     this.props.history.push("/profile");
                 },
                 err => {
@@ -116,90 +113,168 @@ class ReviewForm extends React.Component {
         this.setState({text: event.target.value });
     }
 
-    handleTags(input) {
-        console.log('tag')
-        console.log(input)
+    // convertToRenderedTags(tags) {
+    //     for (let i = 0; i < tags.length; i++) {
+    //
+    //         const renderedTag = {
+    //             id: tags[i].name,
+    //             text: tags[i].name
+    //         };
+    //
+    //         console.log('convertToRenderedTags tag:')
+    //         console.log(renderedTag)
+    //
+    //         this.setState({renderedTags: [...this.state.renderedTags, renderedTag]});
+    //     }
+    // }
+    //
+    // onChangeTags(input) {
+    //     for (let i = 0; i < input.length; i++) {
+    //         const tag = {name: input[i]};
+    //         this.setState({tags: [...this.state.tags, tag]});
+    //     }
+    // }
+    //
+    // onRemovedTags(input) {
+    //     console.log('onremoved input')
+    //     console.log(input)
+    // }
 
-        for (let i = 0; i < input.length; i++) {
-            const tag = {
-                name: input[i]
-            };
-            console.log('tag in loop')
-            console.log(tag)
+    // handleDelete(i) {
+    //     const { tags } = this.state;
+    //     this.setState({
+    //         renderedTags: tags.filter((tag, index) => index !== i),
+    //     });
+    // }
+    //
+    // handleAddition(tag) {
+    //     console.log('tag')
+    //     console.log(tag)
+    //
+    //     const realTag = {
+    //         id: null,
+    //         name: tag.text
+    //     }
+    //
+    //     console.log('realTag')
+    //     console.log(realTag)
+    //
+    //     // this.setState(state => ({ tags: [...state.tags, realTag] }));
+    //     this.setState(state => ({ renderedTags: [...state.renderedTags, realTag] }));
+    // }
+    //
+    // handleDrag(tag, currPos, newPos) {
+    //     const tags = [...this.state.tags];
+    //     const newTags = tags.slice();
+    //
+    //     newTags.splice(currPos, 1);
+    //     newTags.splice(newPos, 0, tag);
+    //
+    //     // re-render
+    //     this.setState({ renderedTags: newTags });
+    // }
 
-            this.setState({tags: [...this.state.tags, tag]});
-        }
-
-        console.log('state.tags')
-        console.log(this.state.tags);
-    }
-
+    // =================================================================================================================
     handleDelete(i) {
         const { tags } = this.state;
-        this.setState({
-            tags: tags.filter((tag, index) => index !== i),
-        });
+        this.setState({tags: tags.filter((tag, index) => index !== i)});
+        // setTags(tags.filter((tag, index) => index !== i));
     }
 
-    handleAddition(tag) {
-        console.log('tag')
-        console.log(tag)
-
-        const inputTag = JSON.stringify(tag);
-
-        const realTag = {
-            id: '' + tagId++,
-            name: inputTag.text
+    handleAddition(input) {
+        const tag = {
+            id: null,
+            name: input.text
         }
-
-        console.log('realTag')
-        console.log(realTag)
-
-        this.setState(state => ({ tags: [...state.tags, realTag] }));
+        this.setState({tags: [...this.state.tags, tag]});
     }
 
     handleDrag(tag, currPos, newPos) {
-        const tags = [...this.state.tags];
-        const newTags = tags.slice();
+        // const newTags = [...tags].slice();
 
-        newTags.splice(currPos, 1);
-        newTags.splice(newPos, 0, tag);
+        // newTags.splice(currPos, 1);
+        // newTags.splice(newPos, 0, tag);
 
-        // re-render
-        this.setState({ tags: newTags });
+        // setTags(newTags);
+    }
+
+    handleTagClick(index) {
+        console.log("The tag at index " + index + " was clicked");
+    }
+
+    onClearAll() {
+        // setTags([]);
+    }
+
+    onTagUpdate(i, newTag) {
+        // const updatedTags = tags.slice();
+        // updatedTags.splice(i, 1, newTag);
+        // setTags(updatedTags);
     }
 
     render() {
+        const { tags } = this.state;
 
-        const { tags, suggestions } = this.state;
+        let displayTags = [];
 
-        console.log(this.state.tags)
+        for (let i = 0; i < tags.length; i++) {
+            const displayTag = {
+                id: tags[i].name,
+                text: tags[i].name
+            }
 
-        let tagsStr = '';
-        // tags !== null ? tags.forEach(tag => {tagsStr += tag.name + ' ';}) : '';
-        if (tags) {
-            tags.forEach(tag => {tagsStr += tag.name + ' ';});
+            displayTags.push(displayTag);
         }
 
         return (
             <Container className="">
 
-                <TagsInput
-                    className="mt-10"
-                    name="tag"
-                    value={tags}
-                    onChange={this.handleTags.bind(this)}
-                    placeHolder="Enter tags"
-
-                />
-
-                {/*<ReactTags tags={tags}*/}
-                {/*   // suggestions={suggestions}*/}
-                {/*   handleDelete={this.handleDelete.bind(this)}*/}
-                {/*   handleAddition={this.handleAddition.bind(this)}*/}
-                {/*   handleDrag={this.handleDrag.bind(this)}*/}
-                {/*   delimiters={delimiters}*/}
+                {/*<TagsInput*/}
+                {/*    className="mt-10"*/}
+                {/*    name="tag"*/}
+                {/*    value={tags}*/}
+                {/*    onChange={this.onChangeTags.bind(this)}*/}
+                {/*    onRemoved={this.onRemovedTags.bind(this)}*/}
+                {/*    placeHolder="Enter tags"*/}
                 {/*/>*/}
+
+                {/*<ReactTags*/}
+                {/*    tags={renderedTags}*/}
+                {/*    labelField={'name'}*/}
+                {/*    // suggestions={renderedTags}*/}
+                {/*    handleDelete={this.handleDelete.bind(this)}*/}
+                {/*    handleAddition={this.handleAddition.bind(this)}*/}
+                {/*    handleDrag={this.handleDrag.bind(this)}*/}
+                {/*    delimiters={delimiters}*/}
+                {/*/>*/}
+
+                {/*<div className={styles.ReactTags}>*/}
+                <div>
+                    <ReactTags
+                        handleDelete={this.handleDelete.bind(this)}
+                        handleAddition={this.handleAddition.bind(this)}
+                        handleDrag={this.handleDrag.bind(this)}
+                        delimiters={delimiters}
+                        handleTagClick={this.handleTagClick.bind(this)}
+                        onClearAll={this.onClearAll.bind(this)}
+                        onTagUpdate={this.onTagUpdate.bind(this)}
+                        suggestions={[{"id":"1","text":"Albania"},{"id":"2","text":"Australia"},{"id":"3","text":"France"},{"id":"4","text":"India"},{"id":"5","text":"Oman"},{"id":"6","text":"Russia"},{"id":"7","text":"Serbia"},{"id":"8","text":"Swaziland"},{"id":"9","text":"United States of America"},{"id":"10","text":"Vietnam"}]}
+                        placeholder="Search..."
+                        minQueryLength={2}
+                        maxLength={10}
+                        autofocus={false}
+                        allowDeleteFromEmptyInput={true}
+                        autocomplete={true}
+                        readOnly={false}
+                        allowUnique={true}
+                        allowDragDrop={true}
+                        inline={true}
+                        allowAdditionFromPaste={true}
+                        editable={true}
+                        clearAll={true}
+                        tags={displayTags}
+                    />
+                </div>
 
                 <Form className="p-5">
                     <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -232,7 +307,6 @@ class ReviewForm extends React.Component {
                     <FloatingLabel controlId="text" label="text">
                         <Form.Control
                             as="textarea"
-                            placeholder="Leave a comment here"
                             style={{ height: '100px' }}
                             defaultValue={this.state.text}
                             onChange={this.handleText.bind(this)}
@@ -251,10 +325,8 @@ class ReviewForm extends React.Component {
                             <div dangerouslySetInnerHTML={{__html: md.render(this.state.text)}} />
                         </Card.Text>
                     </Card.Body>
-                    <Card.Footer className="text-muted">{tagsStr}</Card.Footer>
+                    <Card.Footer className="text-muted">{}</Card.Footer>
                 </Card>
-
-
             </Container>
         );
     }
