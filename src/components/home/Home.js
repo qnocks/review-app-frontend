@@ -1,7 +1,6 @@
 import React from "react";
 import {Card, Col, Container, NavLink, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import ReviewService from "../../services/ReviewService";
 
 class Home extends React.Component {
     constructor(props) {
@@ -35,7 +34,6 @@ class Home extends React.Component {
                                 <NavLink>
                                     <Link to={`/reviews/${review.id}`} className="review-link">
                                         <Card>
-                                            <Card.Img variant="top" src="holder.js/100px160" />
                                             <Card.Body>
                                                 <Card.Title>{review.name}</Card.Title>
                                                 <Card.Subtitle>{review.content}</Card.Subtitle>

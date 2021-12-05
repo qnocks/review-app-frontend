@@ -1,7 +1,5 @@
-import React from "react";
 import axios from 'axios';
 import authHeader from "./authHeader";
-import {Redirect} from "react-router-dom";
 
 // const API = 'https://review-backend-app.herokuapp.com/api/auth';
 const API = 'http://localhost:8080/api/auth';
