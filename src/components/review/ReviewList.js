@@ -12,7 +12,7 @@ class ReviewList extends React.Component {
         this.state = {
             reviews: [],
             currentPage: 1,
-            reviewsPerPage: 5,
+            reviewsPerPage: 2,
             totalPages: null,
             totalElements: null,
             redirect: null
