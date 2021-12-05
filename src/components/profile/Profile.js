@@ -62,7 +62,7 @@ class Profile extends React.Component {
                 },
                 err => {
                     console.log(err);
-                    this.setState({ redirect: "/home" });
+                    this.setState({ redirect: "/login" });
                 }
             );
         }

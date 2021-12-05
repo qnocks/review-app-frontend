@@ -7,6 +7,7 @@ import {WithContext as ReactTags} from 'react-tag-input';
 // import Dropzone from "../../layout/Dropzone";
 import ImageService from "../../services/ImageService";
 import {useDropzone} from "react-dropzone";
+import {Redirect} from "react-router-dom";
 
 const md = new Remarkable()
 
@@ -52,6 +53,7 @@ class ReviewForm extends React.Component {
             text: '',
             userId: null,
             tags: [],
+            redirect: null
         }
     }
 
@@ -64,6 +66,7 @@ class ReviewForm extends React.Component {
             },
             err => {
                 console.log(err);
+                this.setState({ redirect: "/login" });
             }
         );
 
@@ -77,7 +80,45 @@ class ReviewForm extends React.Component {
                     tags: res.data.tags,
                     file: null
                 });
+            }).catch(err => {
+                console.log(err);
+                if (err.response.status === 401) {
+                    this.setState({ redirect: "/login" });
+                }
             });
+        }
+    }
+
+    createOrUpdate(id, review) {
+        if (id !== undefined) {
+            console.log('UPDATE');
+            ReviewService.update(id, review).then(
+                (res) => {
+                    console.log('update success callback data')
+                    console.log(res.data)
+                    this.props.history.push("/profile");
+                },
+                err => {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        this.setState({ redirect: "/login" });
+                    }
+                }
+            );
+        }
+        else {
+            console.log('CREATE');
+            ReviewService.save(review).then(
+                () => {
+                    this.props.history.push("/profile");
+                },
+                err => {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        this.setState({ redirect: "/login" });
+                    }
+                }
+            );
         }
     }
 
@@ -96,72 +137,60 @@ class ReviewForm extends React.Component {
             imagesLink: ''
         };
 
-        ImageService.upload(id, formData).then(
-            res => {
-                console.log('File uploaded successfully');
-                console.log(res);
-                review.imagesLink = res.data;
+        if (formData.get('image')) {
+            ImageService.upload(id, formData).then(
+                res => {
+                    console.log('File uploaded successfully');
+                    console.log(res);
+                    review.imagesLink = res.data;
 
-                console.log('ReviewForm.save.review:');
-                console.log(review);
+                    console.log('ReviewForm.save.review:');
+                    console.log(review);
 
-                if (id !== undefined) {
-                    console.log('UPDATE');
-                    ReviewService.update(id, review).then(
-                        (res) => {
-                            console.log('update success callback data')
-                            console.log(res.data)
-                            this.props.history.push("/profile");
-                        },
-                        err => {
-                            console.log(err);
-                        }
-                    );
+                    this.createOrUpdate(id, review);
+
+                    // if (id !== undefined) {
+                    //     console.log('UPDATE');
+                    //     ReviewService.update(id, review).then(
+                    //         (res) => {
+                    //             console.log('update success callback data')
+                    //             console.log(res.data)
+                    //             this.props.history.push("/profile");
+                    //         },
+                    //         err => {
+                    //             console.log(err);
+                    //         }
+                    //     );
+                    // }
+                    // else {
+                    //     console.log('CREATE');
+                    //     ReviewService.save(review).then(
+                    //         () => {
+                    //             this.props.history.push("/profile");
+                    //         },
+                    //         err => {
+                    //             console.log(err);
+                    //         }
+                    //     );
+                    // }
+                },
+                err => {
+                    console.log(err);
+                    if (err.response.status === 401) {
+                        this.setState({ redirect: "/login" });
+                    }
                 }
-                else {
-                    console.log('CREATE');
-                    ReviewService.save(review).then(
-                        () => {
-                            this.props.history.push("/profile");
-                        },
-                        err => {
-                            console.log(err);
-                        }
-                    );
-                }
-            },
-            err => {
-                console.log(err);
-            }
-        )
+            )
+        }
+        else {
+            this.createOrUpdate(id, review);
+        }
+
 
         // console.log('ReviewForm.save.review:');
         // console.log(review);
 
-        // if (id !== undefined) {
-        //     console.log('UPDATE');
-        //     ReviewService.update(id, review).then(
-        //         (res) => {
-        //             console.log('update success callback data')
-        //             console.log(res.data)
-        //             this.props.history.push("/profile");
-        //         },
-        //         err => {
-        //             console.log(err);
-        //         }
-        //     );
-        // }
-        // else {
-        //     console.log('CREATE');
-        //     ReviewService.save(review).then(
-        //         () => {
-        //             this.props.history.push("/profile");
-        //         },
-        //         err => {
-        //             console.log(err);
-        //         }
-        //     );
-        // }
+
     }
 
     handleName(event) {
@@ -280,6 +309,12 @@ class ReviewForm extends React.Component {
     }
 
     render() {
+        const {redirect} = this.state;
+
+        if (redirect) {
+            return <Redirect to={redirect} />
+        }
+
         const { tags } = this.state;
 
         let displayTags = [];

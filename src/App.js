@@ -83,7 +83,15 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        const user = AuthService.getCurrentUser();
+        const user = AuthService.getCurrentUser().then(
+            res => {
+
+            },
+            err => {
+                console.log(err);
+                this.setState({ redirect: "/login" });
+            }
+        );
 
         if (user) {
             this.setState({

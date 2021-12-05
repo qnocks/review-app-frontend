@@ -1,6 +1,7 @@
 import React from "react";
 import {Card, Col, Container, NavLink, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import ReviewService from "../../services/ReviewService";
 
 class Home extends React.Component {
     constructor(props) {
@@ -20,10 +21,13 @@ class Home extends React.Component {
     }
 
     render() {
+        const { reviews } = this.state;
+
+
         return (
             <Container>
                 <h1>Home page</h1>
-                <h3>Searched Reviews</h3>
+                {reviews.length !== 0 ? (<h3>Searched Reviews</h3>) : null}
                 <Row xs={1} md={2} className="g-4">
                     {
                         this.state.reviews.map((review, idx) => (

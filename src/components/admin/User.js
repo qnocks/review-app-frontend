@@ -1,13 +1,14 @@
 import React from 'react';
 import {Container} from "react-bootstrap";
 import UserService from "../../services/UserService";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class User extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: []
+            users: [],
+            redirect: null
         }
     }
 
@@ -16,6 +17,11 @@ class User extends React.Component {
             this.setState({
                 users: res.data
             })
+        }).catch(err => {
+            console.log(err)
+            if (err.response.status === 401) {
+                this.setState({ redirect: "/login" });
+            }
         });
         console.log('User.componentDidMount users:');
         console.log(this.state.users);
@@ -33,6 +39,12 @@ class User extends React.Component {
     }
 
     render() {
+        const {redirect} = this.state;
+
+        if (redirect) {
+            return <Redirect to={redirect} />
+        }
+
         return (
             <Container>
                 <div>

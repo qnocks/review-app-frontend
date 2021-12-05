@@ -10,7 +10,8 @@ class ProfileForm extends React.Component {
         this.state = {
             username: '',
             email: '',
-            password: ''
+            password: '',
+            newPassword: ''
         }
     }
 
@@ -21,6 +22,7 @@ class ProfileForm extends React.Component {
             username: this.state.username,
             email: this.state.email,
             password: this.state.password,
+            newPassword: this.state.newPassword
         }
 
         console.log('updated profile');
@@ -29,7 +31,9 @@ class ProfileForm extends React.Component {
         const id = this.props.match.params.id;
 
         UserService.update(id, profile).then(res => {
-            AuthService.login(profile.username, profile.password).then(
+            console.log('UserService.update success callback');
+            console.log(res);
+            AuthService.login(profile.username, profile.newPassword).then(
                 () => {
                     this.props.history.push("/profile");
                     window.location.reload();
@@ -84,6 +88,12 @@ class ProfileForm extends React.Component {
         console.log(this.state.password)
     }
 
+    handleNewPassword(event) {
+        console.log('handleNewPassword is invoked');
+        this.setState({ newPassword: event.target.value });
+        console.log(this.state.newPassword)
+    }
+
     render() {
         return (
             <Container className="w-25">
@@ -100,7 +110,12 @@ class ProfileForm extends React.Component {
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" onChange={this.handlePassword.bind(this)} placeholder="Enter new password" />
+                        <Form.Control type="password" onChange={this.handlePassword.bind(this)} placeholder="Enter your password" />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formBasicPassword">
+                        <Form.Label>New password</Form.Label>
+                        <Form.Control type="password" onChange={this.handleNewPassword.bind(this)} placeholder="Enter new password" />
                     </Form.Group>
                     <Button onClick={this.updateProfile.bind(this)} variant="primary" type="submit">Save</Button>
                 </Form>

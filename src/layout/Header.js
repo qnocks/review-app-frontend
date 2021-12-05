@@ -18,9 +18,10 @@ class Header extends React.Component {
     componentDidMount() {
         AuthService.getCurrentUser().then(
             res => {
-                this.setState({
-                    authenticated: true
-                })
+                this.setState({authenticated: true});
+            },
+            err => {
+                this.setState({authenticated: false});
             }
         );
 

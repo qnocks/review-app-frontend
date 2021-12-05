@@ -3,9 +3,8 @@ import {Card, Container} from "react-bootstrap";
 import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 import Markdown from 'react-remarkable';
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import AuthService from "../../services/auth/AuthService";
-import ImageService from "../../services/ImageService";
 
 const md = new Remarkable()
 
@@ -16,7 +15,8 @@ class Review extends React.Component {
         this.state = {
             review: {name: '', text: '', userId: null},
             currentUserId: null,
-            isOwn: false
+            isOwn: false,
+            redirect: null
         }
     }
 
@@ -41,16 +41,24 @@ class Review extends React.Component {
                     },
                     err => {
                         console.log(err);
+                        this.setState({ redirect: "/login" });
                     }
                 )
             },
             err => {
                 console.log(err);
+                this.setState({ redirect: "/login" });
             }
         );
     }
 
     render() {
+        const {redirect} = this.state;
+
+        if (redirect) {
+            return <Redirect to={redirect} />
+        }
+
         const { review, isOwn } = this.state;
 
         const text = review.text;
@@ -65,7 +73,7 @@ class Review extends React.Component {
                 <Card>
                     <Card.Header>{this.state.review.content} ({this.state.review.contentName})</Card.Header>
                     <Card.Body>
-                        <Card.Img variant="top" src={`${review.imagesLink}`} />
+                        {review.imagesLink ? (<Card.Img variant="top" src={`${review.imagesLink}`} className="w-25" />) : null}
                         <Card.Title>{this.state.review.name}</Card.Title>
                         <Card.Text className="text-start">
                             <Markdown>{text}</Markdown>

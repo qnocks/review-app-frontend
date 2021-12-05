@@ -1,6 +1,6 @@
 import React from "react";
 import {Card, Col, Container, Form, FormControl, NavLink, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import ReviewService from "../../services/ReviewService";
 import './css/ReviewList.css';
 
@@ -8,7 +8,8 @@ class ReviewList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            reviews: []
+            reviews: [],
+            redirect: null
         }
     }
 
@@ -19,6 +20,9 @@ class ReviewList extends React.Component {
             })
         }).catch(err => {
             console.log(err)
+            if (err.response.status === 401) {
+                this.setState({ redirect: "/login" });
+            }
         })
     }
 
@@ -29,6 +33,12 @@ class ReviewList extends React.Component {
     }
 
     render() {
+        const {redirect} = this.state;
+
+        if (redirect) {
+            return <Redirect to={redirect} />
+        }
+
         return (
             <Container>
                 <Form className="d-flex">
@@ -46,7 +56,6 @@ class ReviewList extends React.Component {
                                 <NavLink>
                                     <Link to={`/reviews/${review.id}`} className="review-link">
                                         <Card>
-                                            <Card.Img variant="top" src="holder.js/100px160" />
                                             <Card.Body>
                                                 <Card.Title>{review.name}</Card.Title>
                                                 <Card.Subtitle>{review.content}</Card.Subtitle>
