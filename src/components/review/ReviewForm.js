@@ -60,6 +60,8 @@ class ReviewForm extends React.Component {
     componentDidMount() {
         const id = this.props.match.params.reviewId;
 
+        this.setState({reviewId: this.props.match.params.reviewId});
+
         AuthService.getCurrentUser().then(
             res => {
                 this.setState({userId: res.id});
@@ -91,10 +93,25 @@ class ReviewForm extends React.Component {
 
     createOrUpdate(id, review) {
         if (id !== undefined) {
-            console.log('UPDATE');
+            if (formData.get('image')) {
+                ImageService.upload(id, formData).then(
+                    res => {
+                        console.log('File uploaded successfully');
+                        console.log(res);
+
+                        console.log('ReviewForm.save.review:');
+                        console.log(review);
+                    },
+                    err => {
+                        console.log(err);
+                        if (err.response.status === 401) {
+                            this.setState({redirect: "/login"});
+                        }
+                    }
+                )
+            }
             ReviewService.update(id, review).then(
                 (res) => {
-                    console.log('update success callback data')
                     console.log(res.data)
                     this.props.history.push("/profile");
                 },
@@ -107,9 +124,25 @@ class ReviewForm extends React.Component {
             );
         }
         else {
-            console.log('CREATE');
             ReviewService.save(review).then(
-                () => {
+                (res) => {
+                    if (formData.get('image')) {
+                        ImageService.upload(res.data.id, formData).then(
+                            res => {
+                                console.log('File uploaded successfully');
+                                console.log(res);
+
+                                console.log('ReviewForm.save.review:');
+                                console.log(review);
+                            },
+                            err => {
+                                console.log(err);
+                                if (err.response.status === 401) {
+                                    this.setState({redirect: "/login"});
+                                }
+                            }
+                        )
+                    }
                     this.props.history.push("/profile");
                 },
                 err => {
@@ -137,30 +170,7 @@ class ReviewForm extends React.Component {
             imagesLink: this.state.imagesLink
         };
 
-        if (formData.get('image')) {
-            ImageService.upload(id, formData).then(
-                res => {
-                    console.log('File uploaded successfully');
-                    console.log(res);
-                    review.imagesLink = res.data.imagesLink;
-
-                    console.log('ReviewForm.save.review:');
-                    console.log(review);
-
-                    this.createOrUpdate(id, review);
-                },
-                err => {
-                    console.log(err);
-                    if (err.response.status === 401) {
-                        this.setState({ redirect: "/login" });
-                    }
-                }
-            )
-        }
-        else {
-            this.createOrUpdate(id, review);
-        }
-
+        this.createOrUpdate(id, review);
     }
 
     handleName(event) {
