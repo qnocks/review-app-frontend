@@ -29,20 +29,6 @@ class Header extends React.Component {
                 this.setState({authenticated: false});
             }
         );
-
-        // if (user) {
-        //     this.setState({
-        //         authenticated: true
-        //     })
-        // }
-
-        // const user = AuthService.getCurrentUser();
-        //
-        // if (user) {
-        //     this.setState({
-        //         authenticated: true
-        //     })
-        // }
     }
 
     handleSearch(event) {
@@ -64,52 +50,9 @@ class Header extends React.Component {
                 search: text,
             }
         });
+
         window.location.reload();
 
-        // ReviewService.getAll(this.state.currentPage - 1, this.state.reviewsPerPage, text).then(
-        //     res => {
-        //         console.log('СМОТРИ СЮДА')
-        //         console.log(res)
-        //
-        //         this.props.history.push({
-        //             pathname: '/',
-        //             state: {
-        //                 reviews: res.data.content,
-        //                 search: text,
-        //                 totalPages: res.data.totalPages,
-        //                 totalElements: res.data.totalElements,
-        //                 currentPage: res.data.number + 1
-        //             }
-        //         });
-        //         window.location.reload();
-        //     },
-        //     err => {
-        //         console.log(err);
-        //         if (err.response.status === 401) {
-        //             this.setState({ redirect: "/login" });
-        //         }
-        //     }
-        // )
-
-        // SearchService.getSearchReview(text).then(
-        //     res => {
-        //         this.props.history.push({
-        //             pathname: '/',
-        //             state: {
-        //                 reviews: res.data.content,
-        //                 totalPages: res.data.totalPages,
-        //                 totalElements: res.data.totalElements,
-        //                 currentPage: 1,
-        //                 reviewsPerPage: 2,
-        //             }
-        //         });
-        //
-        //         window.location.reload();
-        //     },
-        //     err => {
-        //         console.log(err);
-        //     }
-        // );
     }
 
     logout() {

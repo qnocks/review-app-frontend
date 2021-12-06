@@ -52,25 +52,6 @@ class ProfileForm extends React.Component {
                     });
                 }
             );
-
-            // AuthService.updateUser(user);
-            //
-            // AuthService.getCurrentUser().then(
-            //     res => {
-            //         console.log('Inside AuthService.getCurrentUser() res:');
-            //         console.log(res);
-            //         this.setState({
-            //             currentUser: res,
-            //             userReady: true
-            //         });
-            //         // this.props.history.push("/profile");
-            //         // window.location.reload();
-            //     },
-            //     err => {
-            //         console.log(err);
-            //         this.setState({ redirect: "/home" });
-            //     }
-            // );
         });
     }
 

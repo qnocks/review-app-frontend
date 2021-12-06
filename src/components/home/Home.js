@@ -4,49 +4,32 @@ import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFastBackward, faFastForward, faStepBackward, faStepForward} from "@fortawesome/free-solid-svg-icons";
 import ReviewService from "../../services/ReviewService";
+import SearchService from "../../services/SearchService";
 
 class Home extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            reviews: [],
-            search: null,
-            currentPage: 1,
-            reviewsPerPage: 3,
-            totalPages: null,
-            totalElements: null,
+            reviews: []
         };
     }
 
     componentDidMount() {
         if (this.props.location.state) {
             this.setState({
-                // reviews: this.props.location.state.reviews,
-                // currentPage: this.props.location.state.currentPage,
                 search: this.props.location.state.search,
-                // reviewsPerPage: this.props.location.state.reviewsPerPage,
-                // totalPages: this.props.location.state.totalPages,
-                // totalElements: this.props.location.state.totalElements,
             });
         }
 
-        this.findAll(this.state.currentPage);
+        this.findAll();
     }
 
-    findAll(currentPage) {
-        // currentPage -= 1;
-        ReviewService.getAll(currentPage, this.state.reviewsPerPage, this.state.search).then(res => {
-
-            console.log('СМОТРИ СЮДА')
-            console.log(res)
-
+    findAll() {
+        SearchService.getSearchReview(this.state.search).then(res => {
             this.setState({
-                reviews: res.data.content,
-                totalPages: res.data.totalPages,
-                totalElements: res.data.totalElements,
-                currentPage: res.data.number + 1
-            })
+                reviews: res.data
+            });
         }).catch(err => {
             console.log(err);
             if (err.response.status === 401) {
@@ -91,6 +74,7 @@ class Home extends React.Component {
             this.findAll(this.state.currentPage + 1);
         }
     };
+
 
     render() {
         const { reviews, currentPage, totalPages } = this.state;

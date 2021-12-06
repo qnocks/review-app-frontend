@@ -24,7 +24,6 @@ class Profile extends React.Component {
         const id = this.props.match.params.id;
 
         if (id) {
-            console.log('OTHER PROFILE');
             UserService.get(id).then(
                 res => {
                     console.log('res');
@@ -47,7 +46,6 @@ class Profile extends React.Component {
             )
         }
         else {
-            console.log('OWN PROFILE');
             AuthService.getCurrentUser().then(
                 res => {
                     console.log('RES:')
@@ -94,12 +92,6 @@ class Profile extends React.Component {
 
         const { isOwn } = this.state;
 
-        console.log('Profile.render currentUser:');
-        console.log(currentUser);
-
-        console.log('Profile.render reviews:');
-        console.log(reviews);
-
         return (
             <Container>
                 {
@@ -121,15 +113,6 @@ class Profile extends React.Component {
                                     <strong>Email:</strong>{" "}
                                     {currentUser.email}
                                 </p>
-                                <strong>Authorities:</strong>
-                                {
-                                    roles ? (
-                                        <p>
-                                            {/*{currentUser.roles &&*/}
-                                            {/*currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}*/}
-                                        </p>
-                                    ) : null
-                                }
                             </Card.Text>
                             { isOwn ? (
                                 <>
@@ -167,29 +150,6 @@ class Profile extends React.Component {
                             }
                             </tbody>
                         </Table>
-                        {/*<Row xs={1} md={2} className="g-4">*/}
-                        {/*    {*/}
-                        {/*        currentUser.reviews.map((review, idx) => (*/}
-                        {/*            <Col key={idx}>*/}
-                        {/*                <NavLink>*/}
-                        {/*                    <Link to={`/reviews/${review.id}`} className="review-link">*/}
-                        {/*                        <Card>*/}
-                        {/*                            <Card.Img variant="top" src="holder.js/100px160" />*/}
-
-                        {/*                            <Card.Body>*/}
-                        {/*                                <Card.Title>{review.name}</Card.Title>*/}
-                        {/*                                <Card.Subtitle>{review.content}</Card.Subtitle>*/}
-                        {/*                                <Card.Text>*/}
-                        {/*                                    Review for {review.contentName}    Score: {review.score}   Rating {review.rating}*/}
-                        {/*                                </Card.Text>*/}
-                        {/*                            </Card.Body>*/}
-                        {/*                        </Card>*/}
-                        {/*                    </Link>*/}
-                        {/*                </NavLink>*/}
-                        {/*            </Col>*/}
-                        {/*        ))*/}
-                        {/*    }*/}
-                        {/*</Row>*/}
                     </Card> : null
                 }
             </Container>

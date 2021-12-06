@@ -15,63 +15,6 @@ import EventBus from "./services/auth/EventBus";
 import ProfileForm from "./components/profile/ProfileForm";
 import ReviewForm from "./components/review/ReviewForm";
 
-// class App extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.logout = this.logout.bind(this);
-//
-//         this.state = {
-//             showAdminBoard: false,
-//             currentUser: undefined,
-//         };
-//     }
-//
-//     componentDidMount() {
-//         const user = AuthService.getCurrentUser();
-//
-//         if (user) {
-//             this.setState({
-//                 currentUser: user,
-//                 showAdminBoard: user.roles.includes("ROLE_ADMIN"),
-//             });
-//         }
-//
-//         eventBus.on("logout", () => {
-//             this.logout();
-//         });
-//     }
-//
-//     componentWillUnmount() {
-//         eventBus.remove("logout");
-//     }
-//
-//     logout() {
-//         AuthService.logout();
-//         this.setState({
-//             showAdminBoard: false,
-//             currentUser: undefined,
-//         });
-//     }
-//
-//     render() {
-//         const { currentUser, showAdminBoard } = this.state;
-//
-//         return (
-//             <BrowserRouter>
-//                 <div className="App">
-//                     <Header />
-//                     <Route path='/' exact component={Home} />
-//                     <Route path="/login" exact component={Login} />
-//                     <Route path="/register" exact component={Register} />
-//                     <Route path='/profile' exact component={Profile} />
-//                     <Route path='/reviews' exact component={ReviewList} />
-//                     <Route path='/users' exact component={User} />
-//                 </div>
-//             </BrowserRouter>
-//         );
-//     }
-// }
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -139,22 +82,5 @@ class App extends React.Component {
         )
     }
 }
-
-// function App() {
-//   return (
-//     <BrowserRouter>
-//         <div className="App">
-//             <Header />
-//             <Route path='/' exact component={Home} />
-//             <Route path="/login" exact component={Login} />
-//             <Route path="/register" exact component={Register} />
-//             <Route path='/profile' exact component={Profile} />
-//             <Route path='/reviews' exact component={ReviewList} />
-//             <Route path='/reviews/:id' exact component={Review} />
-//             <Route path='/users' exact component={User} />
-//         </div>
-//     </BrowserRouter>
-//   );
-// }
 
 export default App;

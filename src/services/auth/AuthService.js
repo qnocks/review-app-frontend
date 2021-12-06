@@ -33,10 +33,6 @@ class AuthService {
     }
 
     getCurrentUser() {
-        // const user = JSON.parse(localStorage.getItem('user'));
-        // console.log('getCurrentUser().user:')
-        // console.log(user)
-
         return axios.get(API + '/user', {headers: authHeader()}).then(res => {
             if (res.data.accessToken) {
                 localStorage.setItem('user', JSON.stringify(res.data));

@@ -4,7 +4,6 @@ import ReviewService from "../../services/ReviewService";
 import {Remarkable} from "remarkable";
 import AuthService from "../../services/auth/AuthService";
 import {WithContext as ReactTags} from 'react-tag-input';
-// import Dropzone from "../../layout/Dropzone";
 import ImageService from "../../services/ImageService";
 import {useDropzone} from "react-dropzone";
 import {Redirect} from "react-router-dom";
@@ -53,6 +52,7 @@ class ReviewForm extends React.Component {
             text: '',
             userId: null,
             tags: [],
+            imagesLink: null,
             redirect: null
         }
     }
@@ -78,7 +78,7 @@ class ReviewForm extends React.Component {
                     contentName: res.data.contentName,
                     text: res.data.text,
                     tags: res.data.tags,
-                    file: null
+                    imagesLink: res.data.imagesLink
                 });
             }).catch(err => {
                 console.log(err);
@@ -134,7 +134,7 @@ class ReviewForm extends React.Component {
             text: this.state.text,
             userId: this.state.userId,
             tags: this.state.tags,
-            imagesLink: ''
+            imagesLink: this.state.imagesLink
         };
 
         if (formData.get('image')) {
@@ -142,37 +142,12 @@ class ReviewForm extends React.Component {
                 res => {
                     console.log('File uploaded successfully');
                     console.log(res);
-                    review.imagesLink = res.data;
+                    review.imagesLink = res.data.imagesLink;
 
                     console.log('ReviewForm.save.review:');
                     console.log(review);
 
                     this.createOrUpdate(id, review);
-
-                    // if (id !== undefined) {
-                    //     console.log('UPDATE');
-                    //     ReviewService.update(id, review).then(
-                    //         (res) => {
-                    //             console.log('update success callback data')
-                    //             console.log(res.data)
-                    //             this.props.history.push("/profile");
-                    //         },
-                    //         err => {
-                    //             console.log(err);
-                    //         }
-                    //     );
-                    // }
-                    // else {
-                    //     console.log('CREATE');
-                    //     ReviewService.save(review).then(
-                    //         () => {
-                    //             this.props.history.push("/profile");
-                    //         },
-                    //         err => {
-                    //             console.log(err);
-                    //         }
-                    //     );
-                    // }
                 },
                 err => {
                     console.log(err);
@@ -185,11 +160,6 @@ class ReviewForm extends React.Component {
         else {
             this.createOrUpdate(id, review);
         }
-
-
-        // console.log('ReviewForm.save.review:');
-        // console.log(review);
-
 
     }
 
@@ -209,72 +179,9 @@ class ReviewForm extends React.Component {
         this.setState({text: event.target.value });
     }
 
-    // convertToRenderedTags(tags) {
-    //     for (let i = 0; i < tags.length; i++) {
-    //
-    //         const renderedTag = {
-    //             id: tags[i].name,
-    //             text: tags[i].name
-    //         };
-    //
-    //         console.log('convertToRenderedTags tag:')
-    //         console.log(renderedTag)
-    //
-    //         this.setState({renderedTags: [...this.state.renderedTags, renderedTag]});
-    //     }
-    // }
-    //
-    // onChangeTags(input) {
-    //     for (let i = 0; i < input.length; i++) {
-    //         const tag = {name: input[i]};
-    //         this.setState({tags: [...this.state.tags, tag]});
-    //     }
-    // }
-    //
-    // onRemovedTags(input) {
-    //     console.log('onremoved input')
-    //     console.log(input)
-    // }
-
-    // handleDelete(i) {
-    //     const { tags } = this.state;
-    //     this.setState({
-    //         renderedTags: tags.filter((tag, index) => index !== i),
-    //     });
-    // }
-    //
-    // handleAddition(tag) {
-    //     console.log('tag')
-    //     console.log(tag)
-    //
-    //     const realTag = {
-    //         id: null,
-    //         name: tag.text
-    //     }
-    //
-    //     console.log('realTag')
-    //     console.log(realTag)
-    //
-    //     // this.setState(state => ({ tags: [...state.tags, realTag] }));
-    //     this.setState(state => ({ renderedTags: [...state.renderedTags, realTag] }));
-    // }
-    //
-    // handleDrag(tag, currPos, newPos) {
-    //     const tags = [...this.state.tags];
-    //     const newTags = tags.slice();
-    //
-    //     newTags.splice(currPos, 1);
-    //     newTags.splice(newPos, 0, tag);
-    //
-    //     // re-render
-    //     this.setState({ renderedTags: newTags });
-    // }
-
-    // =================================================================================================================
-    handleDelete(i) {
+     handleDelete(i) {
         const { tags } = this.state;
         this.setState({tags: tags.filter((tag, index) => index !== i)});
-        // setTags(tags.filter((tag, index) => index !== i));
     }
 
     handleAddition(input) {
@@ -285,27 +192,8 @@ class ReviewForm extends React.Component {
         this.setState({tags: [...this.state.tags, tag]});
     }
 
-    handleDrag(tag, currPos, newPos) {
-        // const newTags = [...tags].slice();
-
-        // newTags.splice(currPos, 1);
-        // newTags.splice(newPos, 0, tag);
-
-        // setTags(newTags);
-    }
-
     handleTagClick(index) {
         console.log("The tag at index " + index + " was clicked");
-    }
-
-    onClearAll() {
-        // setTags([]);
-    }
-
-    onTagUpdate(i, newTag) {
-        // const updatedTags = tags.slice();
-        // updatedTags.splice(i, 1, newTag);
-        // setTags(updatedTags);
     }
 
     render() {
@@ -330,38 +218,12 @@ class ReviewForm extends React.Component {
 
         return (
             <Container className="">
-
-                {/*<TagsInput*/}
-                {/*    className="mt-10"*/}
-                {/*    name="tag"*/}
-                {/*    value={tags}*/}
-                {/*    onChange={this.onChangeTags.bind(this)}*/}
-                {/*    onRemoved={this.onRemovedTags.bind(this)}*/}
-                {/*    placeHolder="Enter tags"*/}
-                {/*/>*/}
-
-                {/*<ReactTags*/}
-                {/*    tags={renderedTags}*/}
-                {/*    labelField={'name'}*/}
-                {/*    // suggestions={renderedTags}*/}
-                {/*    handleDelete={this.handleDelete.bind(this)}*/}
-                {/*    handleAddition={this.handleAddition.bind(this)}*/}
-                {/*    handleDrag={this.handleDrag.bind(this)}*/}
-                {/*    delimiters={delimiters}*/}
-                {/*/>*/}
-
-                {/*<div className={styles.ReactTags}>*/}
                 <div>
                     <ReactTags
                         handleDelete={this.handleDelete.bind(this)}
                         handleAddition={this.handleAddition.bind(this)}
-                        handleDrag={this.handleDrag.bind(this)}
                         delimiters={delimiters}
-                        handleTagClick={this.handleTagClick.bind(this)}
-                        onClearAll={this.onClearAll.bind(this)}
-                        onTagUpdate={this.onTagUpdate.bind(this)}
-                        suggestions={[{"id":"1","text":"Albania"},{"id":"2","text":"Australia"},{"id":"3","text":"France"},{"id":"4","text":"India"},{"id":"5","text":"Oman"},{"id":"6","text":"Russia"},{"id":"7","text":"Serbia"},{"id":"8","text":"Swaziland"},{"id":"9","text":"United States of America"},{"id":"10","text":"Vietnam"}]}
-                        placeholder="Search..."
+                        placeholder="Enter tag..."
                         minQueryLength={2}
                         maxLength={10}
                         autofocus={false}
