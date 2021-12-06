@@ -44,15 +44,34 @@ class Header extends React.Component {
         console.log('Header.search: text');
         console.log(text);
 
-        this.props.history.push({
-            pathname: '/',
-            state: {
-                search: text,
+        // this.props.history.push("/");
+
+        SearchService.getSearchReview(text).then(
+            res => {
+                this.setState({
+                    // redirect: true,
+                    // searchedReviews: res.data
+                });
+
+                // this.props.history.push("/");
+
+                console.log('Header.search successful callback');
+                console.log(this.state.reviews);
+
+                this.props.history.push({
+                    pathname: '/',
+                    state: {reviews: res.data}
+                });
+
+                window.location.reload();
+
+
+
+            },
+            err => {
+                console.log(err);
             }
-        });
-
-        window.location.reload();
-
+        );
     }
 
     logout() {
