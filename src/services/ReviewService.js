@@ -6,7 +6,10 @@ const API = 'http://localhost:8080/api/v1/reviews';
 
 class ReviewService {
 
-    getAll(currentPage, reviewsPerPage) {
+    getAll(currentPage, reviewsPerPage, searchText) {
+        if (searchText !== null) {
+            return axios.get(API,{ params: {page: currentPage,size: reviewsPerPage,search: searchText},headers: authHeader() });
+        }
         currentPage -= 1;
         return axios.get(API, { params: {page: currentPage, size: reviewsPerPage },  headers: authHeader() });
     }

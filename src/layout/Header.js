@@ -3,6 +3,7 @@ import {Button, Container, Form, FormControl, Nav, Navbar} from "react-bootstrap
 import AuthService from "../services/auth/AuthService";
 import SearchService from "../services/SearchService";
 import {Redirect} from "react-router-dom";
+import ReviewService from "../services/ReviewService";
 
 class Header extends React.Component {
     constructor(props) {
@@ -11,7 +12,11 @@ class Header extends React.Component {
         this.state = {
             authenticated: false,
             redirect: false,
-            searchedReviews: []
+            searchedReviews: [],
+            currentPage: 1,
+            reviewsPerPage: 3,
+            totalPages: null,
+            totalElements: null,
         }
     }
 
@@ -52,26 +57,59 @@ class Header extends React.Component {
         const text = this.state.search;
         console.log('Header.search: text');
         console.log(text);
-        
-        SearchService.getSearchReview(text).then(
-            res => {
-                this.props.history.push({
-                    pathname: '/',
-                    state: {
-                        reviews: res.data.content,
-                        totalPages: res.data.totalPages,
-                        totalElements: res.data.totalElements,
-                        currentPage: 1,
-                        reviewsPerPage: 2,
-                    }
-                });
 
-                window.location.reload();
-            },
-            err => {
-                console.log(err);
+        this.props.history.push({
+            pathname: '/',
+            state: {
+                search: text,
             }
-        );
+        });
+        window.location.reload();
+
+        // ReviewService.getAll(this.state.currentPage - 1, this.state.reviewsPerPage, text).then(
+        //     res => {
+        //         console.log('СМОТРИ СЮДА')
+        //         console.log(res)
+        //
+        //         this.props.history.push({
+        //             pathname: '/',
+        //             state: {
+        //                 reviews: res.data.content,
+        //                 search: text,
+        //                 totalPages: res.data.totalPages,
+        //                 totalElements: res.data.totalElements,
+        //                 currentPage: res.data.number + 1
+        //             }
+        //         });
+        //         window.location.reload();
+        //     },
+        //     err => {
+        //         console.log(err);
+        //         if (err.response.status === 401) {
+        //             this.setState({ redirect: "/login" });
+        //         }
+        //     }
+        // )
+
+        // SearchService.getSearchReview(text).then(
+        //     res => {
+        //         this.props.history.push({
+        //             pathname: '/',
+        //             state: {
+        //                 reviews: res.data.content,
+        //                 totalPages: res.data.totalPages,
+        //                 totalElements: res.data.totalElements,
+        //                 currentPage: 1,
+        //                 reviewsPerPage: 2,
+        //             }
+        //         });
+        //
+        //         window.location.reload();
+        //     },
+        //     err => {
+        //         console.log(err);
+        //     }
+        // );
     }
 
     logout() {

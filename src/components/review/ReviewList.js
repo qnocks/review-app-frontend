@@ -2,8 +2,6 @@ import React from "react";
 import {Button, Card, Col, Container, Form, FormControl, InputGroup, NavLink, Row} from "react-bootstrap";
 import {Link, Redirect} from "react-router-dom";
 import ReviewService from "../../services/ReviewService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faEdit, faTrash, faStepBackward, faFastBackward, faStepForward, faFastForward, faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
 import './css/ReviewList.css';
 
 class ReviewList extends React.Component {
@@ -12,7 +10,7 @@ class ReviewList extends React.Component {
         this.state = {
             reviews: [],
             currentPage: 1,
-            reviewsPerPage: 2,
+            reviewsPerPage: 3,
             totalPages: null,
             totalElements: null,
             redirect: null
@@ -24,8 +22,9 @@ class ReviewList extends React.Component {
     }
 
     findAll(currentPage) {
-        // currentPage -= 1;
+        currentPage -= 1;
         ReviewService.getAll(currentPage, this.state.reviewsPerPage).then(res => {
+
             this.setState({
                 reviews: res.data.content,
                 totalPages: res.data.totalPages,
@@ -138,19 +137,19 @@ class ReviewList extends React.Component {
                             <InputGroup size="sm">
                                 <InputGroup.Text>
                                     <Button type="button" variant="outline-info" disabled={currentPage === 1} onClick={this.firstPage}>
-                                        <FontAwesomeIcon icon={faFastBackward} /> First
+                                        First
                                     </Button>
                                     <Button type="button" variant="outline-info" disabled={currentPage === 1} onClick={this.prevPage}>
-                                        <FontAwesomeIcon icon={faStepBackward} /> Prev
+                                        Prev
                                     </Button>
                                 </InputGroup.Text>
                                 <FormControl style={pageNumCss} name="currentPage" value={currentPage} onChange={this.changePage} />
                                 <InputGroup.Text>
                                     <Button type="button" variant="outline-info" disabled={currentPage === totalPages} onClick={this.nextPage}>
-                                        <FontAwesomeIcon icon={faStepForward} /> Next
+                                        Next
                                     </Button>
                                     <Button type="button" variant="outline-info" disabled={currentPage === totalPages} onClick={this.lastPage}>
-                                        <FontAwesomeIcon icon={faFastForward} /> Last
+                                        Last
                                     </Button>
                                 </InputGroup.Text>
                             </InputGroup>

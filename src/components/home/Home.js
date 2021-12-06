@@ -3,6 +3,7 @@ import {Button, Card, Col, Container, FormControl, InputGroup, NavLink, Row} fro
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFastBackward, faFastForward, faStepBackward, faStepForward} from "@fortawesome/free-solid-svg-icons";
+import ReviewService from "../../services/ReviewService";
 
 class Home extends React.Component {
     constructor(props) {
@@ -10,8 +11,9 @@ class Home extends React.Component {
 
         this.state = {
             reviews: [],
-            currentPage: null,
-            reviewsPerPage: null,
+            search: null,
+            currentPage: 1,
+            reviewsPerPage: 3,
             totalPages: null,
             totalElements: null,
         };
@@ -20,14 +22,37 @@ class Home extends React.Component {
     componentDidMount() {
         if (this.props.location.state) {
             this.setState({
-                reviews: this.props.location.state.reviews,
-                currentPage: this.props.location.state.currentPage,
+                // reviews: this.props.location.state.reviews,
+                // currentPage: this.props.location.state.currentPage,
+                search: this.props.location.state.search,
                 // reviewsPerPage: this.props.location.state.reviewsPerPage,
-                reviewsPerPage: this.props.location.state.reviewsPerPage,
-                totalPages: this.props.location.state.totalPages,
-                totalElements: this.props.location.state.totalElements,
+                // totalPages: this.props.location.state.totalPages,
+                // totalElements: this.props.location.state.totalElements,
             });
         }
+
+        this.findAll(this.state.currentPage);
+    }
+
+    findAll(currentPage) {
+        // currentPage -= 1;
+        ReviewService.getAll(currentPage, this.state.reviewsPerPage, this.state.search).then(res => {
+
+            console.log('СМОТРИ СЮДА')
+            console.log(res)
+
+            this.setState({
+                reviews: res.data.content,
+                totalPages: res.data.totalPages,
+                totalElements: res.data.totalElements,
+                currentPage: res.data.number + 1
+            })
+        }).catch(err => {
+            console.log(err);
+            if (err.response.status === 401) {
+                this.setState({ redirect: "/login" });
+            }
+        })
     }
 
     changePage = (event) => {
